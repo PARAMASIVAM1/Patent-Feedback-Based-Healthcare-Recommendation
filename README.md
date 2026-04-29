@@ -84,7 +84,7 @@ flowchart LR
 ### 3.4 Processed Outputs
 - `outputs/processed_tabular.csv`
 - `phase2_outputs/processed_dataset.csv`
-- `phase2_outputs/model_comparison.csv`
+- `phase2_outputs/model_comparison.png`
 - `phase2_outputs/summary.json`
 
 ## 4. Model Details (ML + DL)
@@ -269,7 +269,7 @@ ml website project/
 │   │   └── processed_tabular.csv   # Processed training data
 │   ├── phase2_outputs/
 │   │   ├── processed_dataset.csv   # Phase 2 processed data
-│   │   ├── model_comparison.csv    # Algorithm performance comparison
+│   │   ├── model_comparison.png    # Algorithm performance comparison (chart)
 │   │   ├── summary.json            # Training summary statistics
 │   │   └── finetune/
 │   │       └── checkpoint-100/     # Fine-tuned model checkpoint
