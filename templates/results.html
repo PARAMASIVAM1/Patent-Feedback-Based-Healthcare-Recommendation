@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="page-intro">
+    <p class="eyebrow" data-i18n="results_title" data-i18n-part="{{ part_key }}">{{ part }} Specialist Recommendations</p>
+    <h1 data-i18n="results_title" data-i18n-part="{{ part_key }}">Personalized doctor recommendations</h1>
+    <p data-i18n="results_search_details" data-i18n-age="{{ query.age }}" data-i18n-fees="{{ query.fees }}" data-i18n-location="{{ query.location }}">Search details: Age {{ query.age }}, Fees up to {{ query.fees }}, Location {{ query.location }}</p>
+</section>
+
+<section class="search-summary">
+    <p><strong data-i18n="results_disease_label">Disease:</strong> {{ query.disease or 'Any' }}</p>
+    <p><strong data-i18n="results_symptom_label">Symptom:</strong> {{ query.symptom or 'Any' }}</p>
+    {% if fee_range %}
+    <p><strong data-i18n="results_fee_range">Fee Range:</strong> ₹{{ fee_range.min }} - ₹{{ fee_range.max }}</p>
+    {% endif %}
+</section>
+
+{% if results %}
+<section class="results-grid">
+    {% for item in results %}
+    <article class="doctor-card">
+        <div class="doctor-card__meta">
+            <h2>{{ item.doctor_name }}</h2>
+            <p>{{ item.specialization }}{% if item.department %} • {{ item.department }}{% endif %}</p>
+        </div>
+
+        <div class="badge-list">
+            <span class="badge"><strong data-i18n="results_fee">Fee:</strong> ₹{{ item.consultation_fee }}</span>
+            <span class="badge"><strong data-i18n="results_location">Location:</strong> {{ item.location }}</span>
+            <span class="badge"><strong data-i18n="results_hospital_name">Hospital Name:</strong> {{ item.hospital }}</span>
+            {% if item.get('average_rating') is not none %}
+            <span class="badge"><strong data-i18n="results_average_rating">Rating:</strong> {{ item.get('average_rating') }} / 5</span>
+            {% endif %}
+            <span class="badge"><strong data-i18n="results_sentiment">Sentiment:</strong> {{ item.sentiment_label }}</span>
+            <span class="badge"><strong data-i18n="results_review_category">Review Category:</strong> {{ query.disease or item.complaint_category or 'General' }}</span>
+            {% if item.experience_years %}
+            <span class="badge"><strong data-i18n="results_experience_years">Experience:</strong> {{ item.experience_years }} years</span>
+            {% endif %}
+        </div>
+
+        <div class="info-panel">
+            <p><strong data-i18n="results_specialization">Specialization:</strong> {{ item.specialization }}</p>
+            <p><strong data-i18n="results_department">Department:</strong> {{ item.department }}</p>
+            <p><strong data-i18n="results_hospital_name">Hospital Name:</strong> {{ item.hospital }}</p>
+            {% if item.experience_years %}
+            <p><strong data-i18n="results_experience_years">Experience:</strong> {{ item.experience_years }} years</p>
+            {% endif %}
+            <p><strong data-i18n="results_feedback_sample">Feedback sample:</strong> {{ item.feedback_text }}</p>
+            <p><strong data-i18n="results_recommendation_score">Recommendation Score:</strong> {{ item.recommendation_score }}</p>
+        </div>
+
+        <div class="actions">
+            <a class="button" href="/doctor/{{ item.doctor_id }}" data-i18n="results_view_doctor_profile">View Doctor Profile</a>
+            <a class="button secondary" href="/query" data-i18n="results_ask_medical_query">Ask a Medical Query</a>
+        </div>
+    </article>
+    {% endfor %}
+</section>
+{% else %}
+<section class="empty-state">
+    <h2>No matching doctors found</h2>
+    <p data-i18n="results_no_matching">No matching doctors were found. Try changing the fee or location filters.</p>
+    {% if location_part_fee_range %}
+    <p><strong data-i18n="results_available_fee_range">Available fee range in this location:</strong> ₹{{ location_part_fee_range.min }} - ₹{{ location_part_fee_range.max }}</p>
+    {% else %}
+    <p><strong data-i18n="results_no_fee_range">No doctors available for this part in the selected location.</strong></p>
+    {% endif %}
+    <div class="actions">
+        <a class="button" href="/home" data-i18n="results_back_home">Back to Home</a>
+        <a class="button secondary" href="/query" data-i18n="results_ask_medical_query">Ask a Medical Query</a>
+    </div>
+</section>
+{% endif %}
+
+{% if results %}
+<div class="actions">
+    <a class="button secondary" href="/home" data-i18n="results_back_home">Back to Home</a>
+</div>
+{% endif %}
+
+<!-- Language Translation System -->
+<script>
+    // Translation keys mapping for results page
+    const translationKeys = {
+        'results_title': 'Personalized doctor recommendations',
+        'results_disease_label': 'Disease:',
+        'results_symptom_label': 'Symptom:',
+        'results_fee_range': 'Fee Range:',
+        'results_fee': 'Fee:',
+        'results_location': 'Location:',
+        'results_hospital_name': 'Hospital Name:',
+        'results_experience_years': 'Experience:',
+        'results_average_rating': 'Rating:',
+        'results_sentiment': 'Sentiment:',
+        'results_review_category': 'Review Category:',
+        'results_specialization': 'Specialization:',
+        'results_department': 'Department:',
+        'results_feedback_sample': 'Feedback sample:',
+        'results_recommendation_score': 'Recommendation Score:',
+        'results_view_doctor_profile': 'View Doctor Profile',
+        'results_ask_medical_query': 'Ask a Medical Query',
+        'results_back_home': 'Back to Home',
+        'results_no_matching': 'No matching doctors were found. Try changing the fee or location filters.',
+        'results_available_fee_range': 'Available fee range in this location:',
+        'results_no_fee_range': 'No doctors available for this part in the selected location.'
+    };
+
+    // Initialize language selector
+    document.addEventListener('DOMContentLoaded', function() {
+        const languageSelector = document.getElementById('language-selector-results');
+        const savedLang = localStorage.getItem('selectedLanguage') || 'en';
+        languageSelector.value = savedLang;
+        
+        // Fetch translations
+        fetch('/api/translations')
+            .then(response => response.json())
+            .then(translations => {
+                function applyTranslations(lang) {
+                    if (lang === 'en') return; // English is default
+                    
+                    const langTranslations = translations[lang];
+                    if (!langTranslations) return;
+                    
+                    // Translate all elements with data-i18n attribute
+                    document.querySelectorAll('[data-i18n]').forEach(element => {
+                        const key = element.getAttribute('data-i18n');
+                        if (langTranslations[key]) {
+                            if (element.tagName === 'STRONG' || element.tagName === 'SPAN' || element.tagName === 'P') {
+                                element.textContent = langTranslations[key];
+                            } else if (element.tagName === 'A' || element.tagName === 'BUTTON') {
+                                element.textContent = langTranslations[key];
+                            } else {
+                                element.textContent = langTranslations[key];
+                            }
+                        }
+                    });
+                }
+                
+                // Apply initial language
+                applyTranslations(savedLang);
+                
+                // Handle language change
+                languageSelector.addEventListener('change', function() {
+                    const newLang = this.value;
+                    localStorage.setItem('selectedLanguage', newLang);
+                    applyTranslations(newLang);
+                });
+            })
+            .catch(error => console.log('Translation loading skipped'));
+    });
+</script>
+{% endblock %}

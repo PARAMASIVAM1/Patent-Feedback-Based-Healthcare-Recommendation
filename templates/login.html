@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="login-shell">
+    <div class="login-card login-card--feature">
+        <span class="eyebrow">Healthcare AI Platform</span>
+        <h1>Find the right doctor with confidence.</h1>
+        <p>
+            Access multilingual medical guidance, intelligent specialist discovery, and a curated
+            doctor search experience built for faster healthcare decisions.
+        </p>
+
+        <div class="hero__stats">
+            <div class="hero-stat">
+                <strong>AI-assisted</strong>
+                <span>Condition and symptom exploration</span>
+            </div>
+            <div class="hero-stat">
+                <strong>Trusted profiles</strong>
+                <span>Doctor recommendations with ratings</span>
+            </div>
+            <div class="hero-stat">
+                <strong>Location aware</strong>
+                <span>Search by city and compare options</span>
+            </div>
+        </div>
+
+        <div class="info-panel">
+            <h3>What you can do</h3>
+            <ul>
+                <li>Search specialists by disease, symptom, location, and consultation budget.</li>
+                <li>Use the AI medical query assistant for general health guidance.</li>
+                <li>Review top doctors, ratings, hospitals, and location-based results.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="login-card">
+        <span class="eyebrow">Secure access</span>
+        <h2>Login to Healthcare Portal</h2>
+        <p class="muted">Enter your details to continue to the recommendation dashboard.</p>
+
+        {% if login_error %}
+        <p class="muted" style="color: #b00020;">{{ login_error }}</p>
+        {% endif %}
+
+        <form action="/login" method="post" autocomplete="off">
+            <label for="email">Email Address</label>
+            <input id="email" type="email" name="email" placeholder="Enter email" autocomplete="off" required />
+
+            <label for="password">Password</label>
+            <input id="password" type="password" name="password" placeholder="Enter password" autocomplete="off" required />
+
+            <button type="submit">Login</button>
+        </form>
+
+        <div class="actions" style="margin-top: 16px;">
+            <a class="button secondary" href="/forgot-password">Forgot Password</a>
+            <a class="button secondary" href="/enroll">Enroll</a>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

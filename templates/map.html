@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-intro">
+    <span class="eyebrow">Location intelligence</span>
+    <h1>Map-Based Doctor Search</h1>
+    <p>Select a city to view nearby doctors with location-based filtering and profile access.</p>
+</section>
+
+<section class="form-panel">
+    <form action="/map-search" method="post" class="map-form">
+        <div>
+            <label for="location">City</label>
+            <select id="location" name="location">
+                <option value="">All locations</option>
+                {% for location in locations %}
+                <option value="{{ location }}" {% if selected_location == location %}selected{% endif %}>{{ location }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit">Show Map</button>
+    </form>
+</section>
+
+<div id="map" class="map-box"></div>
+
+{% if map_data %}
+<section class="search-summary">
+    <div>
+        <strong>{{ map_data|length }}</strong>
+        <span>doctor results found{% if selected_location %} in {{ selected_location }}{% endif %}</span>
+    </div>
+    <p class="muted">Compare specialists by hospital, city, and rating, then open the full doctor profile.</p>
+</section>
+
+<section class="results-grid">
+    {% for item in map_data %}
+    <article class="doctor-card">
+        <div class="doctor-card__score">
+            <span>Rating</span>
+            <strong>{{ item.rating }}</strong>
+            <small>/ 5</small>
+        </div>
+        <div>
+            <h3>{{ item.doctor }}</h3>
+            <div class="doctor-card__meta">
+                <span><strong>Specialization:</strong> {{ item.specialization }}</span>
+                <span><strong>Hospital:</strong> {{ item.hospital }}</span>
+                <span><strong>Location:</strong> {{ item.location }}</span>
+            </div>
+            <div class="actions">
+                <a class="button secondary" href="/doctor/{{ item.doctor_id }}">View Profile</a>
+            </div>
+        </div>
+    </article>
+    {% endfor %}
+</section>
+{% else %}
+<section class="empty-state">
+    <h3>No map results yet</h3>
+    <p>Select a city and click Show Map to explore nearby doctors.</p>
+</section>
+{% endif %}
+
+{% if map_data %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-sA+4H6vMYi0X7LZE2a9xkqE3mM9xg0pjQbAuH5p2a+g=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-o9N1jE4Bt89vdaZbQb0YGxGJv1S0pZ601TwABd8r0Dg=" crossorigin=""></script>
+<script>
+    var map = L.map('map').setView([11.0, 78.7], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    var markers = [];
+    var mapData = {{ map_data | tojson | safe }};
+    mapData.forEach(function(item) {
+        var marker = L.marker([item.lat, item.lon]).addTo(map);
+        marker.bindPopup('<strong>' + item.doctor + '</strong><br>' + item.specialization + '<br>' + item.location + '<br><a href="/doctor/' + item.doctor_id + '">View profile</a>');
+        markers.push(marker);
+    });
+    if (markers.length) {
+        var group = new L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.5));
+    }
+</script>
+{% endif %}
+{% endblock %}

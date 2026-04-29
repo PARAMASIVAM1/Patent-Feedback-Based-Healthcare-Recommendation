@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="page-intro">
+    <p class="eyebrow" data-i18n="query_title">Medical Query Assistant</p>
+    <h1 data-i18n="query_heading">AI guidance for everyday health questions</h1>
+    <p data-i18n="query_description">Enter a disease name or symptom to see common reasons, usual treatment options, and which doctor to consult.</p>
+</section>
+
+<section class="query-layout">
+    <div class="query-panel">
+        <form action="/query" method="post">
+            <label for="query-input" class="sr-only" data-i18n="query_input_label">Medical query</label>
+            <div class="query-input">
+                <input id="query-input" type="text" name="query" placeholder="Example: fever, headache, skin rash, tooth pain" value="{{ user_query }}" required data-i18n-placeholder="query_placeholder" />
+                <button type="button" class="mic-button" id="voice-btn" aria-label="Start voice input">
+                    <span class="mic-button__icon" aria-hidden="true"></span>
+                </button>
+            </div>
+            <input type="hidden" name="language" id="language-submit" value="{{ selected_language or 'en' }}" />
+            <div class="actions">
+                <button type="submit" class="button" data-i18n="button_get_answer">Get Answer</button>
+                <a class="button secondary" href="/home" data-i18n="results_back_home">Back to Home</a>
+            </div>
+        </form>
+
+        <div class="search-summary">
+            <p data-i18n="query_examples_label">Try these example queries:</p>
+            <div class="badge-list">
+                <button type="button" class="badge query-example" data-i18n="query_example_fever">Fever</button>
+                <button type="button" class="badge query-example" data-i18n="query_example_headache">Headache</button>
+                <button type="button" class="badge query-example" data-i18n="query_example_tooth_pain">Tooth Pain</button>
+                <button type="button" class="badge query-example" data-i18n="query_example_skin_rash">Skin Rash</button>
+                <button type="button" class="badge query-example" data-i18n="query_example_diabetes">Diabetes</button>
+                <button type="button" class="badge query-example" data-i18n="query_example_asthma">Asthma</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="answer-panel">
+        {% if answer %}
+        <h2>{{ answer.title }}</h2>
+        <p>{{ answer.summary }}</p>
+
+        {% if answer.possible_reasons %}
+        <h3 data-i18n="answer_possible_reasons">Possible Reasons</h3>
+        <ul>
+            {% for item in answer.possible_reasons %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if answer.medicines %}
+        <h3 data-i18n="answer_common_medicines">Common Medicines / Treatment</h3>
+        <ul>
+            {% for item in answer.medicines %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if answer.self_care %}
+        <h3 data-i18n="answer_self_care">Self Care</h3>
+        <ul>
+            {% for item in answer.self_care %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if answer.specialist %}
+        <h3 data-i18n="answer_specialist">Recommended Specialist</h3>
+        <p>{{ answer.specialist }}</p>
+        {% endif %}
+
+        {% if answer.emergency %}
+        <h3 data-i18n="answer_emergency">See a Doctor Urgently If</h3>
+        <ul>
+            {% for item in answer.emergency %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if answer.faq_answer %}
+        <h3 data-i18n="answer_extra_guidance">Extra Guidance</h3>
+        <p>{{ answer.faq_answer }}</p>
+        {% endif %}
+
+        <h3 data-i18n="answer_safety_note">Safety Note</h3>
+        <p>{{ answer.disclaimer }}</p>
+        {% else %}
+        <div class="empty-state">
+            <h2 data-i18n="query_empty_title">Start with a symptom or condition</h2>
+            <p data-i18n="query_empty_description">Ask about fever, headache, breathing issues, skin concerns, diabetes, dental pain, and more to get structured guidance.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<script>
+function getCurrentUiLanguage() {
+    const docLang = document.documentElement.lang;
+    if (docLang) {
+        return docLang;
+    }
+    const selector = document.getElementById('language-select');
+    if (selector && selector.value) {
+        return selector.value;
+    }
+    return localStorage.getItem('selectedLanguage') || 'en';
+}
+
+function syncQueryLanguageField() {
+    const languageField = document.getElementById('language-submit');
+    if (languageField) {
+        languageField.value = getCurrentUiLanguage();
+    }
+}
+
+function setQuery(text) {
+    document.querySelector('input[name="query"]').value = text;
+    syncQueryLanguageField();
+}
+
+function mapSpeechLanguage(language) {
+    switch (language) {
+        case 'ta':
+            return 'ta-IN';
+        case 'hi':
+            return 'hi-IN';
+        case 'te':
+            return 'te-IN';
+        case 'kn':
+            return 'kn-IN';
+        default:
+            return 'en-US';
+    }
+}
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Defer to allow base layout language initialization first.
+        setTimeout(syncQueryLanguageField, 0);
+
+        const globalLanguageSelector = document.getElementById('language-select');
+        if (globalLanguageSelector) {
+            globalLanguageSelector.addEventListener('change', function() {
+                syncQueryLanguageField();
+            });
+        }
+
+        document.querySelectorAll('.query-example').forEach((button) => {
+            button.addEventListener('click', function() {
+                setQuery(button.textContent.trim());
+                const form = document.querySelector('form');
+                if (form) {
+                    form.submit();
+                }
+            });
+        });
+
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function() {
+                syncQueryLanguageField();
+            });
+        }
+
+        const voiceButton = document.getElementById('voice-btn');
+        const queryInput = document.getElementById('query-input');
+        let recognition = null;
+        let isListening = false;
+        let userStopped = false;
+
+        if (voiceButton && queryInput) {
+            voiceButton.dataset.state = 'idle';
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.maxAlternatives = 3;
+
+                const updateRecognitionLanguage = function() {
+                    recognition.lang = mapSpeechLanguage(getCurrentUiLanguage());
+                };
+
+                updateRecognitionLanguage();
+
+                recognition.addEventListener('result', function(event) {
+                    const result = event.results[event.results.length - 1];
+                    const transcript = result[0].transcript;
+                    queryInput.value = transcript;
+                });
+
+                recognition.addEventListener('end', function() {
+                    if (isListening && !userStopped) {
+                        try {
+                            recognition.start();
+                            return;
+                        } catch (error) {
+                            // Ignore restart errors.
+                        }
+                    }
+
+                    isListening = false;
+                    voiceButton.classList.remove('is-listening');
+                    voiceButton.dataset.state = 'idle';
+                    voiceButton.setAttribute('aria-label', 'Start voice input');
+                });
+
+                voiceButton.addEventListener('click', function() {
+                    if (isListening) {
+                        userStopped = true;
+                        recognition.stop();
+                        return;
+                    }
+
+                    updateRecognitionLanguage();
+                    try {
+                        userStopped = false;
+                        recognition.start();
+                        isListening = true;
+                        voiceButton.classList.add('is-listening');
+                        voiceButton.dataset.state = 'listening';
+                        voiceButton.setAttribute('aria-label', 'Stop voice input');
+                    } catch (error) {
+                        // Ignore if already started.
+                    }
+                });
+
+                if (globalLanguageSelector) {
+                    globalLanguageSelector.addEventListener('change', updateRecognitionLanguage);
+                }
+
+                document.addEventListener('languageChanged', updateRecognitionLanguage);
+            } else {
+                voiceButton.disabled = true;
+                voiceButton.title = 'Voice input not supported in this browser';
+            }
+        }
+
+    });
+
+    document.addEventListener('languageChanged', function() {
+        syncQueryLanguageField();
+        const form = document.querySelector('form');
+        const queryInput = document.querySelector('input[name="query"]');
+        const emptyState = document.querySelector('.empty-state');
+        if (form && queryInput && queryInput.value.trim() && !emptyState) {
+            form.submit();
+        }
+    });
+</script>
+{% endblock %}

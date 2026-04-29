@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="profile-hero">
+    <div>
+        <p class="eyebrow">{{ doctor.specialization }}</p>
+        <h1>{{ doctor.doctor_name }}</h1>
+        <p>{{ doctor.department }}{% if doctor.location %} • {{ doctor.location }}{% endif %}</p>
+    </div>
+    <div class="doctor-card__score">
+        <span data-i18n="doctor_recommendation_score">Recommendation Score</span>
+        <strong>{{ doctor.recommendation_score if doctor.get('recommendation_score') is not none else 'N/A' }}</strong>
+    </div>
+</section>
+
+<section class="profile-grid">
+    <article class="form-panel">
+        <h2 data-i18n="doctor_professional_overview">Professional overview</h2>
+        <div class="badge-list">
+            <span class="badge"><strong data-i18n="doctor_experience">Experience:</strong> {{ doctor.experience_years }} years</span>
+            <span class="badge"><strong data-i18n="doctor_qualification">Qualification:</strong> {{ doctor.qualification }}</span>
+            <span class="badge"><strong data-i18n="doctor_location">Location:</strong> {{ doctor.location }}</span>
+            <span class="badge"><strong data-i18n="doctor_consultation_fee">Consultation Fee:</strong> ₹{{ doctor.consultation_fee }}</span>
+            {% if doctor.get('average_rating') is not none %}
+            <span class="badge"><strong data-i18n="doctor_average_rating">Average Rating:</strong> {{ doctor.average_rating }} / 5</span>
+            {% endif %}
+            <span class="badge"><strong data-i18n="doctor_sentiment">Sentiment:</strong> {{ doctor.sentiment_label }}</span>
+            <span class="badge"><strong data-i18n="results_review_category">Review Category:</strong> {{ doctor.complaint_category }}</span>
+        </div>
+
+        <div class="info-panel">
+            <p><strong data-i18n="results_specialization">Specialization:</strong> {{ doctor.specialization }}</p>
+            <p><strong data-i18n="results_department">Department:</strong> {{ doctor.department }}</p>
+        </div>
+    </article>
+
+    <aside class="form-panel">
+        <h2 data-i18n="doctor_patient_review">Patient Review</h2>
+        <div class="search-summary">
+            <p>{{ doctor.feedback_text }}</p>
+        </div>
+        {% if latest_review %}
+        <div class="search-summary">
+            <p><strong data-i18n="doctor_new_feedback">New Feedback:</strong> {{ latest_review.new_feedback }}</p>
+            <p><strong data-i18n="doctor_patient_rating">Patient Rating:</strong> {{ latest_review.patient_rating }} / 5</p>
+        </div>
+        {% endif %}
+        <form method="POST" action="/doctor/{{ doctor.doctor_id }}/review" class="form-group" style="margin-top: 16px;">
+            <label for="feedback" style="font-weight: 600;" data-i18n="doctor_add_feedback">Add Feedback</label>
+            <textarea name="feedback" id="feedback" rows="3" placeholder="Write your feedback..." data-i18n-placeholder="doctor_feedback_placeholder" required></textarea>
+            <label for="rating" style="font-weight: 600; margin-top: 12px; display: block;" data-i18n="doctor_rating_label">Rating (1-5)</label>
+            <input type="number" name="rating" id="rating" min="1" max="5" step="1" required>
+            <div class="actions" style="margin-top: 12px;">
+                <button class="button" type="submit" data-i18n="doctor_submit_review">Submit Review</button>
+            </div>
+        </form>
+        <div class="actions">
+            <a class="button" href="/home" data-i18n="results_back_home">Back to Home</a>
+            <a class="button secondary" href="/form/{{ doctor.specialization|lower }}" data-i18n="doctor_find_similar">Find Similar Specialists</a>
+        </div>
+    </aside>
+</section>
+{% endblock %}
