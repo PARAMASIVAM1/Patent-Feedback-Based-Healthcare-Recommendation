@@ -115,7 +115,7 @@ flowchart LR
 - **Speech-to-Text:** Planned integration with OpenAI Whisper (optional)
 - **Voice Cloning:** Planned Coqui XTTS v2 support (optional)
 
-## 5. model.py Output and Performance Metrics
+## 5. Output and Performance Metrics
 
 `model.py` trains and evaluates multiple classic and neural text models for healthcare text classification and doctor recommendation support. The latest saved comparison results are available in `phase2_outputs/model_comparison.csv` and the chart screenshot in `phase2_outputs/model_comparison.png`.
 
@@ -134,7 +134,7 @@ flowchart LR
 
 **Best test accuracy:** Logistic Regression with **0.60** test accuracy.
 
-### 5.2 model.py Output Screenshots
+### 5.2 Output Screenshots
 
 #### Performance Comparison Chart
 
@@ -229,11 +229,11 @@ Open your browser and visit:
 http://localhost:5000
 ```
 
-## 7. Model Output Screenshots
+## 7. Model Output Pictures
 
-The following screenshots show the `model.py` evaluation output, including the model comparison chart and all confusion matrices saved in `phase2_outputs/`.
+The following pictures show the `model.py` evaluation output, including the model comparison chart and all confusion matrices saved in `phase2_outputs/`.
 
-### 7.1 Performance Comparison
+### 7.1 Model Comparison Picture
 
 ![model.py comparison chart](phase2_outputs/model_comparison.png)
 
@@ -256,11 +256,6 @@ The following screenshots show the `model.py` evaluation output, including the m
 ![RoBERTa confusion matrix](phase2_outputs/confusion_matrix_roberta.png)
 
 ![Fine-tuned model confusion matrix](phase2_outputs/confusion_matrix_finetuned.png)
-
-### 7.3 Output Report Files
-- [model_comparison.csv](phase2_outputs/model_comparison.csv) - Algorithm performance metrics
-- [processed_dataset.csv](phase2_outputs/processed_dataset.csv) - Cleaned doctor data
-- [summary.json](phase2_outputs/summary.json) - Training summary statistics
 
 ## 8. Team Member Details
 
