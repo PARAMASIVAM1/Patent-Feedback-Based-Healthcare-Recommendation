@@ -188,11 +188,8 @@ http://localhost:5000
 
 The following picture shows the `model.py` evaluation output.
 
-### 7.1 Model Comparison Picture
 
-<img src="phase2_outputs/model_comparison.png" alt="model.py comparison chart" style="max-width:100%;height:auto;" />
-
-### 7.1a Model Performance Metrics
+### 7.1 Model Performance Metrics
 
 | Model | Test Accuracy | Test Precision | Test Recall | Test F1-Score |
 |-------|:---:|:---:|:---:|:---:|
