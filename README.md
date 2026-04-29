@@ -84,8 +84,8 @@ flowchart LR
 ### 3.4 Processed Outputs
 - `outputs/processed_tabular.csv`
 - `phase2_outputs/processed_dataset.csv`
-- `phase2_outputs/model_comparison.png`
 - `phase2_outputs/summary.json`
+ 
 
 ## 4. Model Details (ML + DL)
 
