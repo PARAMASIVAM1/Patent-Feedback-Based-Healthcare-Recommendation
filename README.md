@@ -229,37 +229,35 @@ Open your browser and visit:
 http://localhost:5000
 ```
 
-## 7. Sample Output / Scenarios
+## 7. Model Output Screenshots
 
-### Search Scenario 1: Doctor Recommendation by Symptom
-```
-Input: "I have chest pain and shortness of breath"
-Language Detected: English
-Preprocessing: Tokenized, lemmatized, stopwords removed
-NLP Result: Symptom -> Cardiology
-Doctor Matched: Dr. Rajesh (Cardiologist, 4.8★, ₹500/consultation)
-```
+The following screenshots show the `model.py` evaluation output, including the model comparison chart and all confusion matrices saved in `phase2_outputs/`.
 
-### Search Scenario 2: Multilingual Query (Tamil)
-```
-Input: "என்னுக்கு தலைவலி இருக்கு"
-Language Detected: Tamil
-Translated to: "I have headache"
-NLP Result: Neurology/General Physician
-Doctor Matched: Dr. Priya (General Physician, 4.5★, ₹300/consultation)
-```
+### 7.1 Performance Comparison
 
-### Search Scenario 3: Complex Filter
-```
-Input Criteria:
-  - Disease: Diabetes
-  - Location: Chennai
-  - Budget: ₹400 max
-  - Rating: 4.0+
-Result: 3 doctors filtered and ranked by SBERT similarity
-```
+![model.py comparison chart](phase2_outputs/model_comparison.png)
 
-### Output Report Files
+### 7.2 Confusion Matrices
+
+![Logistic Regression confusion matrix](phase2_outputs/confusion_matrix_Logistic_Regression.png)
+
+![Linear SVM confusion matrix](phase2_outputs/confusion_matrix_Linear_SVM.png)
+
+![Random Forest confusion matrix](phase2_outputs/confusion_matrix_Random_Forest.png)
+
+![Naive Bayes confusion matrix](phase2_outputs/confusion_matrix_Naive_Bayes.png)
+
+![MLP confusion matrix](phase2_outputs/confusion_matrix_MLP_%28Deep_Learning%29.png)
+
+![SBERT confusion matrix](phase2_outputs/confusion_matrix_sbert.png)
+
+![BERT confusion matrix](phase2_outputs/confusion_matrix_bert.png)
+
+![RoBERTa confusion matrix](phase2_outputs/confusion_matrix_roberta.png)
+
+![Fine-tuned model confusion matrix](phase2_outputs/confusion_matrix_finetuned.png)
+
+### 7.3 Output Report Files
 - [model_comparison.csv](phase2_outputs/model_comparison.csv) - Algorithm performance metrics
 - [processed_dataset.csv](phase2_outputs/processed_dataset.csv) - Cleaned doctor data
 - [summary.json](phase2_outputs/summary.json) - Training summary statistics
@@ -268,14 +266,14 @@ Result: 3 doctors filtered and ranked by SBERT similarity
 
 **Batch:** 2024-2025  
 **Team Number:** 14  
-**Institution:** SRM Institute of Science and Technology
+**Institution:** Kumaraguru College of Technology
 
-| Sr. | Name | Register Number | Email |
-|-----|------|-----------------|-------|
-| 1 | Paramasivam A | 24BCS198 | paramasivam.23bcs198@srmap.edu.in |
-| 2 | Prawin H | 24BCS209 | prawin.23bcs209@srmap.edu.in |
-| 3 | Rupak Krishna P M | 24BCS231 | rupakkrishna.23bcs231@srmap.edu.in |
-| 4 | Santhosh Krishnaa M | 24BCS245 | santhoshkrishnaa.23bcs245@srmap.edu.in |
+| Sr. | Name | Register Number |
+|-----|------|-----------------|
+| 1 | Paramasivam A | 24BCS198 |
+| 2 | Prawin H | 24BCS209 |
+| 3 | Rupak Krishna P M | 24BCS231 |
+| 4 | Santhosh Krishnaa M | 24BCS245 |
 
 ## 9. Project Structure
 
@@ -491,8 +489,3 @@ python app.py
 - **deep-translator:** https://github.com/nidhaloff/deep-translator
 
 ---
-
-**Created:** 2024  
-**Last Updated:** 2024  
-**License:** Open Source (Educational Purpose)  
-**Status:** Production Ready with Advanced Features
