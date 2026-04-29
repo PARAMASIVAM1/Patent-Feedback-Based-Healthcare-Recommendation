@@ -115,7 +115,7 @@ flowchart LR
 - **Speech-to-Text:** Planned integration with OpenAI Whisper (optional)
 - **Voice Cloning:** Planned Coqui XTTS v2 support (optional)
 
-## 5.Output and Performance Metrics
+## 5. model.py Output and Performance Metrics
 
 `model.py` trains and evaluates multiple classic and neural text models for healthcare text classification and doctor recommendation support. The latest saved comparison results are available in `phase2_outputs/model_comparison.csv` and the chart screenshot in `phase2_outputs/model_comparison.png`.
 
@@ -134,7 +134,7 @@ flowchart LR
 
 **Best test accuracy:** Logistic Regression with **0.60** test accuracy.
 
-### 5.2 Output Screenshots
+### 5.2 model.py Output Screenshots
 
 #### Performance Comparison Chart
 
