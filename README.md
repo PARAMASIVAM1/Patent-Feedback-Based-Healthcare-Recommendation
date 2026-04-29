@@ -190,7 +190,7 @@ The following picture shows the `model.py` evaluation output.
 
 ### 7.1 Model Comparison Picture
 
-![model.py comparison chart](phase2_outputs/model_comparison.png)
+<img src="phase2_outputs/model_comparison.png" alt="model.py comparison chart" style="max-width:100%;height:auto;" />
 
 ### 7.2 Evaluation Matrix
 
