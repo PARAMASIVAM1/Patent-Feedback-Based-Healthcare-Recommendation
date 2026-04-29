@@ -115,6 +115,51 @@ flowchart LR
 - **Speech-to-Text:** Planned integration with OpenAI Whisper (optional)
 - **Voice Cloning:** Planned Coqui XTTS v2 support (optional)
 
+## 5. model.py Output and Performance Metrics
+
+`model.py` trains and evaluates multiple classic and neural text models for healthcare text classification and doctor recommendation support. The latest saved comparison results are available in `phase2_outputs/model_comparison.csv` and the chart screenshot in `phase2_outputs/model_comparison.png`.
+
+### 5.1 Performance Summary
+
+| Model | Train Accuracy | Test Accuracy | Train F1 | Test F1 | CV Mean |
+|------|------:|------:|------:|------:|------:|
+| Logistic Regression | 0.6875 | 0.6000 | 0.6856 | 0.6333 | 0.1833 |
+| Linear SVM | 0.7500 | 0.2000 | 0.7415 | 0.2000 | 0.1333 |
+| Random Forest | 1.0000 | 0.0000 | 1.0000 | 0.0000 | 0.0667 |
+| Naive Bayes | 0.6250 | 0.4000 | 0.6143 | 0.3467 | 0.1167 |
+| MLP (Deep Learning) | 1.0000 | 0.4000 | 1.0000 | 0.4667 | 0.1333 |
+| SBERT + Logistic Regression | 0.3750 | 0.2000 | 0.2045 | 0.0667 | 0.0000 |
+| BERT + Logistic Regression | 0.4375 | 0.0000 | 0.3143 | 0.0000 | 0.0000 |
+| RoBERTa + Logistic Regression | 0.3750 | 0.2000 | 0.2045 | 0.0667 | 0.0900 |
+
+**Best test accuracy:** Logistic Regression with **0.60** test accuracy.
+
+### 5.2 model.py Output Screenshots
+
+#### Performance Comparison Chart
+
+![model.py comparison chart](phase2_outputs/model_comparison.png)
+
+#### Confusion Matrix Screenshots
+
+![Logistic Regression confusion matrix](phase2_outputs/confusion_matrix_Logistic_Regression.png)
+
+![Linear SVM confusion matrix](phase2_outputs/confusion_matrix_Linear_SVM.png)
+
+![Random Forest confusion matrix](phase2_outputs/confusion_matrix_Random_Forest.png)
+
+![Naive Bayes confusion matrix](phase2_outputs/confusion_matrix_Naive_Bayes.png)
+
+![MLP confusion matrix](phase2_outputs/confusion_matrix_MLP_%28Deep_Learning%29.png)
+
+![SBERT confusion matrix](phase2_outputs/confusion_matrix_sbert.png)
+
+![BERT confusion matrix](phase2_outputs/confusion_matrix_bert.png)
+
+![RoBERTa confusion matrix](phase2_outputs/confusion_matrix_roberta.png)
+
+![Fine-tuned model confusion matrix](phase2_outputs/confusion_matrix_finetuned.png)
+
 ## Features
 - Doctor, specialist, and hospital recommendation
 - NLP-based patient review analysis
